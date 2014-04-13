@@ -23,13 +23,13 @@ public class FileContent extends HTTPContent {
 	}
 	
 	public static String getHTML(String fileName) {
-		FileHandle file = Gdx.files.classpath("com/debug/web/" + fileName);
+		FileHandle file = Gdx.files.classpath("com/debugconsole/web/" + fileName);
 		return file.readString();
 	}
 
 	@Override
 	public Response getResponse(String url, Map<String, String> params) {
-		FileHandle file = Gdx.files.classpath("com/debug/web" + url);
+		FileHandle file = Gdx.files.classpath("com/debugconsole/web" + url);
 		if (file.extension().equals("js")) {
 			return new Response(Status.OK,"application/javascript",file.read());
 		} else if (file.extension().equals("css")) {
