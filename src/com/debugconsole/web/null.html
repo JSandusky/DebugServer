@@ -42,7 +42,7 @@
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
           
-            <input name="SEARCH_TEXT" type="text" class="form-control" placeholder="Search...">
+            <input type="text" class="form-control" placeholder="Search...">
           
         </div>
       </div>
@@ -56,26 +56,11 @@
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">${objectname}</h1>
-
-          <h2 class="sub-header">${class}</h2>
-          <h3>${path}</h3>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Field-name</th>
-                  <th>Type</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${fields}
-              </tbody>
-            </table>
-          </div>
-          <input type="button" value="Refresh" onClick='javascript:history.go(0)'/>
-          <input type="submit"value="Commit Edits"/>
+            <div class="jumbotron">
+                <h1 class="page-header">You've struck a null!</h1>
+                <input type="hidden" value="" />
+                <input type="submit" value="Instantiate a new instance" />
+            </div>
         </div>
       </div>
     </div>

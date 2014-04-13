@@ -6,11 +6,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import com.debugconsole.DebugServer;
 import com.debugconsole.HTMLBuilder;
 import com.debugconsole.HTTPContent;
 import com.debugconsole.NanoHTTPD.Response;
 import com.debugconsole.NanoHTTPD.Response.Status;
+import com.debugconsole.SearchResult;
 
 public class AssetContent extends HTTPContent {
 	AssetManager assets;
@@ -77,6 +79,18 @@ public class AssetContent extends HTTPContent {
 			builder.add("<li class='active'>").link("asset").add("Loaded Assets").pop().add("</li>");
 		else
 			builder.add("<li>").link("asset").add("Loaded Assets").pop().add("</li>");
+	}
+
+	@Override
+	public void search(String[] query, Array<SearchResult> results) {
+		for (String str : assets.getAssetNames()) {
+			for (String q : query) {
+				if (str.contains(q)) {
+					results.add(new SearchResult("Asset",str,"asset/" + str));
+					break;
+				}
+			}
+		}
 	}
 
 }

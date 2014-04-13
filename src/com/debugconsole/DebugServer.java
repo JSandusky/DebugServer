@@ -7,13 +7,10 @@ import com.badlogic.gdx.utils.Array;
 import com.debugconsole.data.FileContent;
 
 public class DebugServer extends NanoHTTPD {
-	public static Object root;
-	AssetManager assets;
 	Array<HTTPContent> content = new Array<HTTPContent>();
 	
 	public DebugServer(AssetManager assets) {
 		super("localhost",8091);
-		this.assets = assets;
 	}
 	
 	@Override
@@ -39,15 +36,47 @@ public class DebugServer extends NanoHTTPD {
 		
 		if (uri.equalsIgnoreCase("/"))
 			uri = "/main.html";
-		for (HTTPContent c : content) {
+		
+		if (parameters.containsKey("SEARCH_TEXT")) {
+			final String search = parameters.get("SEARCH_TEXT");
+			
+			if (search.length() > 0) {
+				parameters.remove("SEARCH_TEXT");
+				
+				final String[] query = search.split(" ");
+				Array<SearchResult> results = new Array<SearchResult>();
+				for (HTTPContent c : content) {
+					c.search(query, results); 
+				}
+				String html = FileContent.getHTML("search.html");
+				html = html.replace("${navigation}", getNavigation(null));
+				HTMLBuilder res = new HTMLBuilder();
+				for (SearchResult r : results) {
+					res.row();
+						res.td();
+							res.add(r.kind);
+						res.pop();
+						res.td();
+							res.link(r.url);
+							res.add(r.display);
+						res.pop();
+					res.pop();
+				}
+				html = html.replace("${fields}", res.toString());
+				return new Response(html);
+			}
+		}
+		
+		for (int i = 0; i < content.size; ++i) {
+			HTTPContent c = content.get(i);
 			if (c.validFor(uri)) {
 				Response r = c.getResponse(uri, parameters);
 				if (r != null) {
 					if (r instanceof StringResponse) {
 						String str = convertStreamToString(r.getData());
 						HTMLBuilder builder = new HTMLBuilder();
-						for (int i = 0; i < content.size; ++i) {
-							content.get(i).writeNavigation(builder,null);
+						for (int j = 0; j < content.size; ++j) {
+							content.get(j).writeNavigation(builder,null);
 						}
 						str = str.replace("${navigation}", builder.toString());
 						return new Response(str);

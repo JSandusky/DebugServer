@@ -3,10 +3,12 @@ package com.debugconsole.data;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import com.badlogic.gdx.utils.Array;
 import com.debugconsole.DebugServer;
 import com.debugconsole.HTMLBuilder;
 import com.debugconsole.HTTPContent;
 import com.debugconsole.ObjToHTML;
+import com.debugconsole.SearchResult;
 import com.debugconsole.URIResolver;
 import com.debugconsole.NanoHTTPD.Response;
 
@@ -31,6 +33,12 @@ public class ObjectContent extends HTTPContent {
 	public Response getResponse(String url, Map<String,String> parameters) {
 		URIResolver reso = new URIResolver(root);
 		Object target = reso.resolve(url.replace(baseUrl,""));
+		
+		if (target == null) {
+			String html = FileContent.getHTML("null.html");
+			html = html.replace("${navigation}",getServer().getNavigation(this));
+			return new Response(html);
+		}
 		
 		if (parameters.size() > 1) {
 			synchronized (target) {
@@ -90,5 +98,36 @@ public class ObjectContent extends HTTPContent {
 		else
 			builder.add("<li>").link(baseUrl).add(name).pop().add("</li>");
 	}
+
+	@Override
+	public void search(String[] query, Array<SearchResult> results) {
+		Array<Object> checked = new Array<Object>(); //prevents circle searches
+		search(root, baseUrl, query, results, checked,0);
+	}
 	
+	static void search(Object obj, String url, String[] query, Array<SearchResult> results, Array<Object> checked, int depth) {
+		//if (depth > 16)
+			//return;
+		checked.add(obj);
+		for (Field fld : obj.getClass().getDeclaredFields()) {
+			fld.setAccessible(true);
+			
+			final String fldName = fld.getName();
+			for (String q : query) {
+				if (fldName.contains(q)) {
+					results.add(new SearchResult("Object",obj.toString(),url));
+					break;
+				}
+			}
+			
+			try {
+				Object val = fld.get(obj);
+				if (!checked.contains(val, false)) {
+					search(val,url + "/" + fld.getName(), query, results,checked, depth + 1);
+				}
+			} catch (Exception ex) {
+				//don't care
+			}
+		}
+	}
 }

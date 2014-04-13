@@ -4,9 +4,11 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.debugconsole.DebugServer;
 import com.debugconsole.HTMLBuilder;
 import com.debugconsole.HTTPContent;
+import com.debugconsole.SearchResult;
 import com.debugconsole.StringResponse;
 import com.debugconsole.NanoHTTPD.Response;
 import com.debugconsole.NanoHTTPD.Response.Status;
@@ -42,6 +44,13 @@ public class FileContent extends HTTPContent {
 
 	@Override
 	public void writeNavigation(HTMLBuilder builder, HTTPContent who) {
+		
+		
+		
+	}
+
+	@Override
+	public void search(String[] query, Array<SearchResult> results) {
 		// TODO Auto-generated method stub
 		
 	}
