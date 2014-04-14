@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="http://127.0.0.1:8091/" >
+    <base "./" />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Debug Console</title>
+    <title>${servername}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -60,7 +60,7 @@ function compileCode() {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Debug Console</a>
+          <a class="navbar-brand" href="#">${servername}</a>
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
         :
@@ -83,7 +83,6 @@ function compileCode() {
                 <div>
                 <ul class="nav nav-pills">
                     <li><a onClick="compileCode()">Compile</a></li>
-                    <li><a href="#">Save to File (on source machine)</a></li>
                 </ul>
                 </div>
                 
@@ -102,6 +101,7 @@ function compileCode() {
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.getSession().setMode("ace/mode/lua");
+    editor.setShowPrintMargin(false);
 </script>
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

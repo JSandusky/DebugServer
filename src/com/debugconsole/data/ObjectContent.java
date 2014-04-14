@@ -23,6 +23,7 @@ public class ObjectContent extends HTTPContent {
 	public interface InfoExtend {
 		public void extend(Field fld, Object obj, HTMLBuilder builder);
 		public void extend(Class clazz, HTMLBuilder builder);
+		public void extend(Method method, HTMLBuilder builder);
 	}
 	
 	public ObjectContent(DebugServer server, String name, Object root, String baseUrl) {
@@ -39,8 +40,9 @@ public class ObjectContent extends HTTPContent {
 		docSource = new ObjToHTML.DocSource() {
 			@Override
 			public String getMethodDoc(Method method) {
-				//??
-				return null;
+				HTMLBuilder builder = new HTMLBuilder();
+				extension.extend(method, builder);
+				return builder.toString();
 			}
 			
 			@Override
@@ -71,6 +73,7 @@ public class ObjectContent extends HTTPContent {
 		if (target == null && !parameters.containsKey("INSTANTIATE")) {
 			String html = FileContent.getHTML("null.html");
 			html = html.replace("${nullpath}","<div class='well'>" + url + "</div>");
+			html = html.replace("${servername}", getServer().getName());
 			html = html.replace("${navigation}",getServer().getNavigation(this));
 			return new Response(html);
 		} else if (target == null && parameters.containsKey("INSTANTIATE")){
@@ -80,6 +83,7 @@ public class ObjectContent extends HTTPContent {
 			} catch (Exception ex) {
 				String html = FileContent.getHTML("error_create.html");
 				html = html.replace("${nullpath}","<div class='well'>" + url + "</div>");
+				html = html.replace("${servername}", getServer().getName());
 				html = html.replace("${navigation}", getServer().getNavigation(this));
 				return new Response(html);
 			}
@@ -100,7 +104,7 @@ public class ObjectContent extends HTTPContent {
 		
 		String html = FileContent.getHTML("object.html");
 		html = html.replace("${navigation}",getServer().getNavigation(this));
-		
+		html = html.replace("${servername}", getServer().getName());
 		
 		{
 			HTMLBuilder builder = new HTMLBuilder();
@@ -112,7 +116,7 @@ public class ObjectContent extends HTTPContent {
 				for (int i = 0; i < parts.length-1; ++i) {
 					link += parts[i] + "/";
 				}
-				builder.li().link(link).add("main").pop().pop();
+				//builder.li().link(link).add("main").pop().pop();
 			}
 			
 			String link = "";
@@ -155,9 +159,9 @@ public class ObjectContent extends HTTPContent {
 	@Override
 	public void writeNavigation(HTMLBuilder builder, HTTPContent who) {
 		if (who == this)
-			builder.add("<li class='active'>").link(baseUrl).add(name).pop().add("</li>");
+			builder.add("<li class='active'>").link("/" + baseUrl).add(name).pop().add("</li>");
 		else
-			builder.add("<li>").link(baseUrl).add(name).pop().add("</li>");
+			builder.add("<li>").link("/" + baseUrl).add(name).pop().add("</li>");
 	}
 
 	@Override
@@ -190,5 +194,15 @@ public class ObjectContent extends HTTPContent {
 				//don't care
 			}
 		}
+	}
+	
+	@Override
+	public String getPrettyName() {
+		return name;
+	}
+
+	@Override
+	public String getDoc() {
+		return "View and make minor edits to the java contents of " + name;
 	}
 }

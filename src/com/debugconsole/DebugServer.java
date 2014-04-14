@@ -8,9 +8,15 @@ import com.debugconsole.data.FileContent;
 
 public class DebugServer extends NanoHTTPD {
 	Array<HTTPContent> content = new Array<HTTPContent>();
+	String name;
 	
-	public DebugServer(AssetManager assets) {
+	public DebugServer(String name) {
 		super("localhost",8091);
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	@Override
@@ -30,6 +36,15 @@ public class DebugServer extends NanoHTTPD {
 	static String convertStreamToString(java.io.InputStream is) {
 	    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
 	    return s.hasNext() ? s.next() : "";
+	}
+	
+	public String getPopUrl(String start) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < start.length(); ++i) {
+			if (start.charAt(i) == '/')
+				sb.append("../");
+		}
+		return sb.toString();
 	}
 	
 	@Override
@@ -53,6 +68,7 @@ public class DebugServer extends NanoHTTPD {
 					c.search(query, results); 
 				}
 				String html = FileContent.getHTML("search.html");
+				html = html.replace("${servername}", name);
 				html = html.replace("${navigation}", getNavigation(null));
 				HTMLBuilder res = new HTMLBuilder();
 				for (SearchResult r : results) {
@@ -61,7 +77,7 @@ public class DebugServer extends NanoHTTPD {
 							res.add(r.kind);
 						res.pop();
 						res.td();
-							res.link(r.url);
+							res.link("/" + r.url);
 							res.add(r.display);
 						res.pop();
 					res.pop();
@@ -73,6 +89,12 @@ public class DebugServer extends NanoHTTPD {
 		
 		for (int i = 0; i < content.size; ++i) {
 			HTTPContent c = content.get(i);
+			//if (c.intercept(uri))
+			//	return c.getResponse(uri, parameters);
+		}
+		
+		for (int i = 0; i < content.size; ++i) {
+			final HTTPContent c = content.get(i);
 			if (c.validFor(uri)) {
 				Response r = c.getResponse(uri, parameters);
 				if (r != null) {
@@ -82,7 +104,19 @@ public class DebugServer extends NanoHTTPD {
 						for (int j = 0; j < content.size; ++j) {
 							content.get(j).writeNavigation(builder,null);
 						}
+						str = str.replace("${servername}", name);
 						str = str.replace("${navigation}", builder.toString());
+						
+						HTMLBuilder usage = new HTMLBuilder();
+						for (int j = 0; j < content.size; ++j) {
+							final HTTPContent cont = content.get(j);
+							final String prettyName = cont.getPrettyName();
+							if (prettyName == null)
+								continue;
+							usage.h3().add(prettyName).pop().line();
+							usage.add(cont.getDoc()).line();
+						}
+						str = str.replace("${content}",usage.toString());
 						return new Response(str);
 					} else {
 						return r;

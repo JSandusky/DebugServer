@@ -12,10 +12,10 @@
     <title>${servername}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/dashboard.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -59,10 +59,8 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <div class="jumbotron">
-                <h1 class="page-header">You've struck a null!</h1>
-                ${nullpath}
-                <input type="hidden" name="INSTANTIATE" value="1" />
-                <input type="submit" value="Instantiate a new instance" />
+                <h1 class="page-header">${title}</h1>
+                ${image}
             </div>
         </div>
       </div>
@@ -71,8 +69,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/js/jquery-1.11.0.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <!--<script src="js/docs.min.js"></script>-->
     </form>
   </body>

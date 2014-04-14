@@ -13,6 +13,9 @@ public abstract class HTTPContent {
 	public HTTPContent(DebugServer server) {
 		this.server = server;
 	}
+	public boolean intercept(String url) {
+		return false;
+	}
 	public abstract boolean validFor(String url);
 	public abstract Response getResponse(String url, Map<String,String> params);
 	public abstract void writeNavigation(HTMLBuilder builder, HTTPContent who);
@@ -20,4 +23,8 @@ public abstract class HTTPContent {
 	public boolean display() {
 		return true;
 	}
+	public String getDoc() {
+		return "";
+	}
+	public abstract String getPrettyName();
 }

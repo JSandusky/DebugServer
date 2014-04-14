@@ -14,6 +14,17 @@ public class HTMLBuilder {
 		return string.toString();
 	}
 	
+	public HTMLBuilder space() {
+		add("&nbsp;");
+		return this;
+	}
+	
+	public HTMLBuilder space(int ct) {
+		for (int i = 0; i < ct; ++i)
+			add("&nbsp;");
+		return this;
+	}
+	
 	public HTMLBuilder line() {
 		add("<br/>");
 		return this;

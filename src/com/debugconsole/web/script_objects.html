@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base "./" />
     <meta charset="utf-8">
+    <base "./" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -25,6 +25,8 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+    
   </head>
 
   <body>
@@ -41,11 +43,12 @@
           <a class="navbar-brand" href="#">${servername}</a>
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
-          :
+        :
           <ul class="nav navbar-nav navbar-right">
             ${navigation}
           </ul>
             <input name="SEARCH_TEXT" type="text" class="form-control" placeholder="Search...">
+          
         </div>
       </div>
     </div>
@@ -58,12 +61,25 @@
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <div class="jumbotron">
-                <h1 class="page-header">You've struck a null!</h1>
-                ${nullpath}
-                <input type="hidden" name="INSTANTIATE" value="1" />
-                <input type="submit" value="Instantiate a new instance" />
-            </div>
+          <h1 class="page-header">${prettyname}</h1>
+
+          <h2 class="sub-header">${path}</h2>
+          <div class="table-responsive">
+            <table id="mainTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Field-name</th>
+                  <th>Type</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${fields}
+              </tbody>
+            </table>
+          </div>
+          <input type="button" value="Refresh" onClick='javascript:history.go(0)'/>
+          <input type="submit"value="Commit Edits"/>
         </div>
       </div>
     </div>
@@ -74,6 +90,23 @@
     <script src="/js/jquery-1.11.0.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <!--<script src="js/docs.min.js"></script>-->
+    <script>
+    $(document).ready(function() {
+    $("#mainTable .btn").on("click",function() {
+        var tr = $(this).closest('tr');
+        tr.fadeOut(400, function(){
+            tr.remove();
+        });
+        var text = $(tr).find("td:first").text();
+        $.ajax({
+          type: "POST",
+          url: ".${url}/DELETE",
+          data: text
+        });
+        return false;
+    });
+});
+    </script>
     </form>
   </body>
 </html>

@@ -59,4 +59,9 @@ public class CompilerContent extends HTTPContent {
 	public boolean display() {
 		return false;
 	}
+	
+	@Override
+	public String getPrettyName() {
+		return null;
+	}
 }

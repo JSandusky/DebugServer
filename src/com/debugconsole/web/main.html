@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="http://127.0.0.1:8091/" >
+    <base "./" />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Debug Console</title>
+    <title>${servername}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Debug Console</a>
+          <a class="navbar-brand" href="#">${servername}</a>
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
             :
@@ -60,11 +60,7 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Debug Console</h1>
-
-          <h3>Usage</h3>
-          <div class="table-responsive">
-            
-          </div>
+          ${content}
         </div>
       </div>
     </div>

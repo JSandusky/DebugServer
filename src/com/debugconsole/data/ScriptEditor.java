@@ -27,13 +27,6 @@ public class ScriptEditor extends HTTPContent {
 		this.baseUrl = baseUrl;
 	}
 	
-	@Deprecated //this guy is going to go away
-	public static class ScriptData {
-		public Object parent;
-		public Object self;
-		public ObjectMap<String,Object> data = new ObjectMap<String,Object>();
-	}
-	
 	public enum MessageKind {
 		Info,
 		Error,
@@ -51,12 +44,29 @@ public class ScriptEditor extends HTTPContent {
 			this.kind = kind;
 		}
 	}
+	
+	public static class ObjectData {
+		public String Name;
+		public String Value;
+		public String url;
+		public String type;
+		public boolean canEdit;
+		
+		public ObjectData(String nm, String type, String val, String url, boolean canEdit) {
+			this.Name = nm;
+			this.type = type;
+			this.Value = val;
+			this.url = url;
+			this.canEdit = canEdit;
+		}
+	}
+	
 	public interface ScriptProvider {
 		public boolean compile(String code, Array<MessageData> messages);
-		@Deprecated //going away soon
-		public ScriptData getData(Object of);
-		@Deprecated //going away soon
-		public void setData(ScriptData sd);
+		public void getData(String[] path, Array<ObjectData> holder);
+		public void setData(String[] path, Map<String,String> values);
+		public void deleteData(String[] path, String deleteName);
+		public void search(String[] query, String url, Array<SearchResult> results);
 	}
 	
 	@Override
@@ -72,19 +82,20 @@ public class ScriptEditor extends HTTPContent {
 		
 		String html = FileContent.getHTML("script.html");
 		html = html.replace("${navigation}", getServer().getNavigation(this));
+		html = html.replace("${servername}", getServer().getName());
 		
 		return new Response(html);
 	}
 	@Override
 	public void writeNavigation(HTMLBuilder builder, HTTPContent who) {
 		if (who == this)
-			builder.add("<li class='active'>").link(baseUrl).add(prettyName).pop().add("</li>");
+			builder.add("<li class='active'>").link("/" + baseUrl).add(prettyName).pop().add("</li>");
 		else
-			builder.add("<li>").link(baseUrl).add(prettyName).pop().add("</li>");
+			builder.add("<li>").link("/" + baseUrl).add(prettyName).pop().add("</li>");
 	}
-	
 	@Override
 	public void search(String[] query, Array<SearchResult> results) {
+		// TODO Auto-generated method stub
 		
 	}
 	
@@ -102,5 +113,15 @@ public class ScriptEditor extends HTTPContent {
 			else
 				holder.add(fh);
 		}
+	}
+	
+	@Override
+	public String getPrettyName() {
+		return prettyName;
+	}
+
+	@Override
+	public String getDoc() {
+		return "Write and execute scripts on the remote machine";
 	}
 }

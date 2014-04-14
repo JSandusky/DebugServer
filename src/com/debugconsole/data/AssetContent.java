@@ -43,12 +43,15 @@ public class AssetContent extends HTTPContent {
 				for (String str : assets.getAssetNames()) {
 					builder.row();
 					builder.td();
+					Glyphs.getGlyph(assets.getAssetType(str), builder);
+					builder.space(2);
 					builder.link(baseUrl + "/" + str).add(str).pop();
 					builder.pop();
 					builder.td().add(assets.getAssetType(str).getSimpleName()).pop();
 					builder.pop();
 				}
 				
+				html = html.replace("${servername}", getServer().getName());
 				html = html.replace("${navigation}", getServer().getNavigation(this));
 				html = html.replace("${fields}", builder.toString());
 				
@@ -80,9 +83,9 @@ public class AssetContent extends HTTPContent {
 	@Override
 	public void writeNavigation(HTMLBuilder builder, HTTPContent who) {
 		if (who == this)
-			builder.add("<li class='active'>").link(baseUrl).add(prettyName).pop().add("</li>");
+			builder.add("<li class='active'>").link("/" + baseUrl).add(prettyName).pop().add("</li>");
 		else
-			builder.add("<li>").link(baseUrl).add(prettyName).pop().add("</li>");
+			builder.add("<li>").link("/" + baseUrl).add(prettyName).pop().add("</li>");
 	}
 
 	@Override
@@ -90,11 +93,20 @@ public class AssetContent extends HTTPContent {
 		for (String str : assets.getAssetNames()) {
 			for (String q : query) {
 				if (str.contains(q)) {
-					results.add(new SearchResult("Asset",str,baseUrl + "/" + str));
+					results.add(new SearchResult("Asset",str, "/" + baseUrl + "/" + str));
 					break;
 				}
 			}
 		}
 	}
 
+	@Override
+	public String getPrettyName() {
+		return prettyName;
+	}
+
+	@Override
+	public String getDoc() {
+		return "View/download currently loaded assets on the host machine";
+	}
 }
