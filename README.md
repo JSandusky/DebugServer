@@ -28,19 +28,17 @@ in LibGDX Application create:
 			
 Features
 ============
-- Explore and download files from internal storage
+- Explore and download files via a FileHandleResolver
 - See what's loaded in any number of AssetManager instances, download those resources if desired
 - Execute scripts (requires implementing a simple compiler interface)
 	- You will need grab the appropriate ACE plugins for your scripting language of choice and make a minor tweak to "script.html" as I greatly stripped down ACE to save on file size (everything in "web" ends up in your jar)
 - Explore object graphs
 - Make minor changes and instantiate objects (provided they have a nullary constructor)
+- Script object exploration interface and reference example for Lua via LuaJ
+- InfoMine abstract class (override getText()) for providing simple text dumps
+- ImageContent abstract class (override getPixmap()) for providing a pixmap you create to display
 
 To-Do
 ============
 - Loading script files in the file explorer into the script editor (for convenience vs. downloading them)
-- Refine file exploration a bit more, right now it's limited to internal
 - Add ranking to search (# of hits most likely)
-- Script object exploration interface and reference example for Lua via LuaJ
-- Object img interface for drawing debug images (such as overhead maps of the game-world, box2d info, etc)
-- Add base StringDumpContent type of content, implement a few abstract methods to add an arbitrary text dump
-	- for adding content without being forced to always have the debug server in the project
