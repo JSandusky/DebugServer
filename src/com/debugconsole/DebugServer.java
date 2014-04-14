@@ -23,6 +23,10 @@ public class DebugServer extends NanoHTTPD {
 		this.content.add(content);
 	}
 	
+	public void removeContent(HTTPContent content) {
+		this.content.removeValue(content, true);
+	}
+	
 	static String convertStreamToString(java.io.InputStream is) {
 	    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
 	    return s.hasNext() ? s.next() : "";
@@ -100,7 +104,8 @@ public class DebugServer extends NanoHTTPD {
 	public String getNavigation(HTTPContent who) {
 		HTMLBuilder builder = new HTMLBuilder();
 		for (int i = 0; i < content.size; ++i) {
-			content.get(i).writeNavigation(builder,who);
+			if (content.get(i).display())
+				content.get(i).writeNavigation(builder,who);
 		}
 		return builder.toString();
 	}

@@ -2,15 +2,19 @@ package com.debugconsole;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public final class ObjToHTML {
-	
+	public interface DocSource {
+		public String getFieldDoc(Field fld);
+		public String getMethodDoc(Method method);
+	}
 	//this is used
-	public static void buildTable(Object obj, HTMLBuilder builder, String uri) {
+	public static void buildTable(Object obj, HTMLBuilder builder, String uri, DocSource docSource) {
 		int controlID = 5;
 		for (Field fld : obj.getClass().getDeclaredFields()) {
 			fld.setAccessible(true);
@@ -34,14 +38,14 @@ public final class ObjToHTML {
 				builder.pop();
 				
 				builder.td().add(fld.getType().getSimpleName());
-				builder.line();
-				final int modifiers = fld.getModifiers();
-				if (Modifier.isFinal(modifiers))
-					builder.color("SaddleBrown").add(" Final ").pop();
-				if (Modifier.isTransient(modifiers))
-					builder.color("OliveDrab").add(" Transient ").pop();
-				if (Modifier.isPrivate(modifiers))
-					builder.color("purple").add(" Private ").pop();
+					builder.line();
+					final int modifiers = fld.getModifiers();
+					if (Modifier.isFinal(modifiers))
+						builder.color("SaddleBrown").add(" Final ").pop();
+					if (Modifier.isTransient(modifiers))
+						builder.color("OliveDrab").add(" Transient ").pop();
+					if (Modifier.isPrivate(modifiers))
+						builder.color("purple").add(" Private ").pop();
 				builder.pop();
 				
 				builder.td();
@@ -58,7 +62,55 @@ public final class ObjToHTML {
 				builder.pop();
 			
 			builder.pop();
+			
+			final String doc = docSource.getFieldDoc(fld);
+			if (doc != null && doc.length() > 0) {
+				builder.row().td(3).add(doc).pop().pop();
+			}
 			++controlID;
+		}
+	}
+	
+	public static void writeMethodTable(Object obj, HTMLBuilder builder, String uri, DocSource docSource) {
+		for (Method m : obj.getClass().getDeclaredMethods()) {
+			m.setAccessible(true);
+			final int mods = m.getModifiers();
+			if (Modifier.isStatic(mods) || Modifier.isAbstract(mods))
+				continue;
+			builder.row();
+			
+			builder.td().bold().add(m.getName()).pop().pop();
+			
+			
+			builder.td();
+				if (Modifier.isPublic(mods)) {
+					builder.add("public ").line();
+				} else if (Modifier.isProtected(mods)) {
+					builder.add("protected ").line();	
+				} else if (Modifier.isPrivate(mods)) {
+					builder.add("private ").line();
+				} 
+				if (Modifier.isFinal(mods)) {
+					builder.add("final ").line();
+				}
+			builder.pop();
+			
+			StringBuilder params = new StringBuilder();
+			boolean anyWritten = false;
+			for (Class c : m.getParameterTypes()) {
+				if (anyWritten)
+					params.append(", ");
+				anyWritten = true;
+				params.append(c.getSimpleName());
+			}
+			builder.td().add(params.toString()).pop();
+			
+			builder.pop();
+			
+			final String doc = docSource.getMethodDoc(m);
+			if (doc != null && doc.length() > 0) {
+				builder.row().td(3).add(doc).pop().pop();
+			}
 		}
 	}
 	
@@ -96,7 +148,7 @@ public final class ObjToHTML {
 		builder.td().add("Value").pop();
 		builder.pop();
 		
-		buildTable(obj,builder,uri);
+		//??buildTable(obj,builder,uri);
 		builder.pop();
 		
 		builder.add("<input type='button' value='Refresh' onClick='javascript:history.go(0)'/>");
@@ -124,7 +176,7 @@ public final class ObjToHTML {
 			}
 		} else if (fld.getType().isPrimitive()) {
 			if (fld.getType() == boolean.class)
-				writer.add("<input name='" + fld.getName() + "' type='checkbox' checked='" + obj.toString() + "'/>");
+				writer.add("<input name='" + fld.getName() + "' type='checkbox' " + (((Boolean)obj) == true ? "checked" : "") + "/>");
 			else
 				writer.add("<input name='" + fld.getName() + "' type='text' value='" + obj.toString() + "'/>");
 		} else if (fld.getType() == String.class) {

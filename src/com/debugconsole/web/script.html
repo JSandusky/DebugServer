@@ -25,6 +25,28 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+  <style type="text/css" media="screen">
+    #editor { 
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 400px;
+    }
+</style>
+
+<script>
+function compileCode() {
+    $.ajax({
+      type: "POST",
+      url: "/compile",
+      data: ace.edit("editor").getSession().getValue(),
+      success: function(ret) {
+            $("#messages").html(ret);
+        }
+    });
+}
+</script>
   </head>
 
   <body>
@@ -41,12 +63,11 @@
           <a class="navbar-brand" href="#">Debug Console</a>
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
-            :
+        :
           <ul class="nav navbar-nav navbar-right">
             ${navigation}
           </ul>
             <input name="SEARCH_TEXT" type="text" class="form-control" placeholder="Search...">
-          
         </div>
       </div>
     </div>
@@ -59,12 +80,16 @@
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Debug Console</h1>
-
-          <h3>Usage</h3>
-          <div class="table-responsive">
-            
-          </div>
+                <div>
+                <ul class="nav nav-pills">
+                    <li><a onClick="compileCode()">Compile</a></li>
+                    <li><a href="#">Save to File (on source machine)</a></li>
+                </ul>
+                </div>
+                
+                <div id="messages"></div>
+                
+                <div id="editor">@{code}</div>
         </div>
       </div>
     </div>
@@ -72,8 +97,15 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/ace/ace.js"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/xcode");
+    editor.getSession().setMode("ace/mode/lua");
+</script>
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    
     <!--<script src="js/docs.min.js"></script>-->
     </form>
   </body>

@@ -15,7 +15,7 @@ public class HTMLBuilder {
 	}
 	
 	public HTMLBuilder line() {
-		string.append("<br/>");
+		add("<br/>");
 		return this;
 	}
 	
@@ -39,6 +39,14 @@ public class HTMLBuilder {
 		return tag("<h3>","</h3>");
 	}
 	
+	public HTMLBuilder heading(int num) {
+		return tag("<h" + num + ">","</h" + num + ">");
+	}
+	
+	public HTMLBuilder heading(int num, String cssClass) {
+		return tag("<h" + num + " class='" + cssClass + "'>","</h" + num + ">");
+	}
+	
 	public HTMLBuilder table() {
 		return tag("<table border='1'>","</table>");
 	}
@@ -47,8 +55,8 @@ public class HTMLBuilder {
 		return tag("<tr>","</tr>");
 	}
 	
-	public HTMLBuilder row(String color) {
-		return tag("<tr bgcolor='" + color + "'>","</tr>");
+	public HTMLBuilder row(String cssClass) {
+		return tag("<tr class='" + cssClass + "'>","</tr>");
 	}
 	
 	public HTMLBuilder color(String color) {
@@ -75,6 +83,34 @@ public class HTMLBuilder {
 		return tag("<u>","</u>");
 	}
 	
+	public HTMLBuilder ul() {
+		return tag("<ul>","</ul>");
+	}
+	
+	public HTMLBuilder ol() {
+		return tag("<ol>","</ol>");
+	}
+	
+	public HTMLBuilder ul(String cssClass) {
+		return tag("<ul class='" + cssClass + "'>", "</ul>");
+	}
+	
+	public HTMLBuilder ol(String cssClass) {
+		return tag("<ol class='" + cssClass + "'>", "</ol>");
+	}
+	
+	public HTMLBuilder li() {
+		return tag("<li>","</li>");
+	}
+	
+	public HTMLBuilder li(String cssClass) {
+		return tag("<li class='" + cssClass + "'>", "</li>");
+	}
+	
+	public HTMLBuilder span(String cssClass) {
+		return tag("<span class='" + cssClass + "'>","</span>");
+	}
+	
 	public HTMLBuilder add(String txt) {
 		string.append(txt);
 		return this;
@@ -84,9 +120,18 @@ public class HTMLBuilder {
 		return tag("<a href='" + url + "'>","</a>");
 	}
 	
-	HTMLBuilder tag(String open, String close) {
+	public HTMLBuilder div(String cssClass) {
+		return tag("<div class='" + cssClass + "'>","</div>");
+	}
+	
+	public HTMLBuilder tag(String open, String close) {
 		string.append(open);
 		popStack.add(close);
+		return this;
+	}
+	
+	public HTMLBuilder img(String path) {
+		add("<img src='"+path +"'/>");
 		return this;
 	}
 	

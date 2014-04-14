@@ -41,9 +41,11 @@
           <a class="navbar-brand" href="#">Debug Console</a>
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
-          
-            <input type="text" class="form-control" placeholder="Search...">
-          
+          :
+          <ul class="nav navbar-nav navbar-right">
+            ${navigation}
+          </ul>
+            <input name="SEARCH_TEXT" type="text" class="form-control" placeholder="Search...">
         </div>
       </div>
     </div>
@@ -58,7 +60,8 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <div class="jumbotron">
                 <h1 class="page-header">You've struck a null!</h1>
-                <input type="hidden" value="" />
+                ${nullpath}
+                <input type="hidden" name="INSTANTIATE" value="1" />
                 <input type="submit" value="Instantiate a new instance" />
             </div>
         </div>

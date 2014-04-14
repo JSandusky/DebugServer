@@ -17,4 +17,7 @@ public abstract class HTTPContent {
 	public abstract Response getResponse(String url, Map<String,String> params);
 	public abstract void writeNavigation(HTMLBuilder builder, HTTPContent who);
 	public abstract void search(String[] query, Array<SearchResult> results);
+	public boolean display() {
+		return true;
+	}
 }

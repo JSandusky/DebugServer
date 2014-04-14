@@ -41,12 +41,11 @@
           <a class="navbar-brand" href="#">Debug Console</a>
         </div>
         <div class="navbar-collapse collapse navbar-form navbar-right">
-            :
+          :
           <ul class="nav navbar-nav navbar-right">
             ${navigation}
           </ul>
             <input name="SEARCH_TEXT" type="text" class="form-control" placeholder="Search...">
-          
         </div>
       </div>
     </div>
@@ -59,12 +58,13 @@
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Debug Console</h1>
-
-          <h3>Usage</h3>
-          <div class="table-responsive">
-            
-          </div>
+            <div class="jumbotron">
+                <div class="alert alert-danger">
+                    <h1 class="page-header">Ooops! Couldn't instantiate that?</h1>
+                    Only types with nullary constructors can be instantiated.
+                </div>
+                ${nullpath}
+            </div>
         </div>
       </div>
     </div>

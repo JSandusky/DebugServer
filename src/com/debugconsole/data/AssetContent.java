@@ -16,30 +16,34 @@ import com.debugconsole.SearchResult;
 
 public class AssetContent extends HTTPContent {
 	AssetManager assets;
+	String baseUrl;
+	String prettyName;
 	
-	public AssetContent(DebugServer server, AssetManager assets) {
+	public AssetContent(DebugServer server, AssetManager assets, String prettyName, String baseUrl) {
 		super(server);
 		this.assets = assets;
+		this.prettyName = prettyName;
+		this.baseUrl = baseUrl;
 	}
 	
 	@Override
 	public boolean validFor(String url) {
-		return url.indexOf("/asset") == 0;
+		return url.indexOf("/" + baseUrl) == 0;
 	}
 
 	@Override
 	public Response getResponse(String uri, Map<String, String> params) {
 		String[] parts = uri.split("/");
-		if (parts.length > 1 && parts[1].equalsIgnoreCase("asset")) {
-			if (uri.equalsIgnoreCase("/asset")) {
+		if (parts.length > 1 && parts[1].equalsIgnoreCase(baseUrl)) {
+			if (uri.equalsIgnoreCase("/" + baseUrl)) {
 				String html = FileContent.getHTML("assets.html");
 				
 				HTMLBuilder builder = new HTMLBuilder();
-				builder.h3().add("Currently Loaded Assets").pop().line();
+				builder.h3().add(prettyName).pop().line();
 				for (String str : assets.getAssetNames()) {
 					builder.row();
 					builder.td();
-					builder.link("asset/" + str).add(str).pop();
+					builder.link(baseUrl + "/" + str).add(str).pop();
 					builder.pop();
 					builder.td().add(assets.getAssetType(str).getSimpleName()).pop();
 					builder.pop();
@@ -76,9 +80,9 @@ public class AssetContent extends HTTPContent {
 	@Override
 	public void writeNavigation(HTMLBuilder builder, HTTPContent who) {
 		if (who == this)
-			builder.add("<li class='active'>").link("asset").add("Loaded Assets").pop().add("</li>");
+			builder.add("<li class='active'>").link(baseUrl).add(prettyName).pop().add("</li>");
 		else
-			builder.add("<li>").link("asset").add("Loaded Assets").pop().add("</li>");
+			builder.add("<li>").link(baseUrl).add(prettyName).pop().add("</li>");
 	}
 
 	@Override
@@ -86,7 +90,7 @@ public class AssetContent extends HTTPContent {
 		for (String str : assets.getAssetNames()) {
 			for (String q : query) {
 				if (str.contains(q)) {
-					results.add(new SearchResult("Asset",str,"asset/" + str));
+					results.add(new SearchResult("Asset",str,baseUrl + "/" + str));
 					break;
 				}
 			}

@@ -13,7 +13,12 @@ public class URIResolver {
 		relTo = obj;
 	}
 	
-	public Object resolve(String uri) {
+	public static class Meta {
+		public Field fld;
+		public Object parent;
+	}
+	
+	public Object resolve(String uri, Meta meta) {
 		String[] parts = uri.split("/");
 		if (parts.length > 1) {
 			try {
@@ -21,6 +26,8 @@ public class URIResolver {
 				for (int i = 1; i < parts.length; ++i) {
 					if (parts[i].equalsIgnoreCase("/") || parts[i].length() == 0)
 						continue;
+					if (working != null && meta != null)
+						meta.parent = working;
 					String part = parts[i];
 					int value = Integer.MIN_VALUE;
 					try {
@@ -36,6 +43,7 @@ public class URIResolver {
 					} else {
 						Field fld = working.getClass().getDeclaredField(parts[i]);
 						fld.setAccessible(true);
+						meta.fld = fld;
 						Object val = fld.get(working);
 						working = val;
 					}
